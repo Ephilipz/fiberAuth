@@ -9,6 +9,7 @@ import (
 func Auth(app fiber.Router, userService service.User, jwtService service.JWT) {
 	app.Post("/login", handler.Login(userService, jwtService))
 	app.Post("/register", handler.Register(userService, jwtService))
+	app.Post("/refresh", handler.Refresh(userService, jwtService))
 	// app.Get("/loginapple", handler.LoginApple(userService))
 	// app.Get("/logingoogle", handler.LoginGoogle(userService))
 }

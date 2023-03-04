@@ -59,7 +59,6 @@ func (j *JWT) GenerateJWT(info map[string]any, expiry time.Duration) (string, er
 }
 
 func (j *JWT) PublicKey() any {
-	fmt.Println("public key accessed")
 	return j.rsa.Public()
 }
 
@@ -70,7 +69,7 @@ func (j *JWT) ClaimsFromJWT(token string) (map[string]any, error) {
 			return nil, fmt.Errorf("unexpected method: %s", t.Header["alg"])
 		}
 
-		return j.rsa.PublicKey, nil
+		return j.PublicKey(), nil
 	})
 
 	if err != nil {

@@ -36,7 +36,7 @@ func Login(userService service.User, jwtService service.JWT) fiber.Handler {
 				JSON(fiber.Map{"message": "incorrect username or password"})
 		}
 
-		return SendTokens(c, userService, jwtService, userId)
+		return sendTokens(c, userService, jwtService, userId)
 	}
 }
 
@@ -75,7 +75,7 @@ func Register(userService service.User, jwtService service.JWT) fiber.Handler {
 				JSON(fiber.Map{"message": "unable to register. This user likely exists"})
 		}
 
-		return SendTokens(c, userService, jwtService, userId)
+		return sendTokens(c, userService, jwtService, userId)
 	}
 }
 
@@ -97,35 +97,60 @@ func validateRegistrationDTO(userDTO model.CreateUserDTO) error {
 	if len(err) == 0 {
 		return nil
 	}
-
 	return errors.Join(err...)
 }
 
-func SendTokens(c *fiber.Ctx, userService service.User, jwtService service.JWT, userId uint) error {
-	roles, err := userService.GetRoles(userId)
+func Refresh(userService service.User, jwtService service.JWT) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		token := c.FormValue("token")
+		if len(token) == 0 {
+			return c.Status(fiber.ErrBadRequest.Code).
+				JSON(fiber.Map{"message": "Token cannot be empty"})
+		}
+		claims, err := jwtService.ClaimsFromJWT(token)
+		if err != nil || len(claims) == 0 {
+			return c.Status(fiber.ErrBadRequest.Code).
+				JSON(fiber.Map{"message": "Invalid token"})
+		}
 
+		userId := uint(claims["sub"].(float64))
+		return sendTokens(c, userService, jwtService, userId)
+	}
+}
+
+func sendTokens(c *fiber.Ctx, userService service.User, jwtService service.JWT, userId uint) error {
+	if userId == 0 {
+		return c.Status(fiber.ErrNotAcceptable.Code).
+			JSON(fiber.Map{"message": "Unable to find user"})
+	}
+
+	roles, err := userService.GetRoles(userId)
 	if err != nil {
 		return c.Status(fiber.ErrInternalServerError.Code).
 			JSON(fiber.Map{"message": "Unable to get roles"})
 	}
 
-	roleNames := []string{}
-	for _, role := range roles {
-		roleNames = append(roleNames, role.Name)
-	}
-	roleNamesStr := strings.Join(roleNames, ",")
-
+	roleNamesStr := strings.Join(roleNames(roles), ",")
 	claims := map[string]any{
 		"sub":   userId,
 		"roles": roleNamesStr,
 	}
 
-	access, err := jwtService.GenerateJWT(claims, time.Minute*10)
-
+	var access, refresh string
+	access, err = jwtService.GenerateJWT(claims, time.Minute*10)
+	refresh, err = jwtService.GenerateJWT(claims, time.Hour*24)
 	if err != nil {
 		return c.Status(fiber.ErrBadRequest.Code).
 			JSON(fiber.Map{"message": "Unable to generate JWT"})
 	}
 
-	return c.JSON(fiber.Map{"token": access})
+	return c.JSON(fiber.Map{"access": access, "refresh": refresh})
+}
+
+func roleNames(roles []model.Role) []string {
+	roleNames := []string{}
+	for _, role := range roles {
+		roleNames = append(roleNames, role.Name)
+	}
+	return roleNames
 }
