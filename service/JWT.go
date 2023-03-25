@@ -15,8 +15,8 @@ type JWT struct {
 	rsa *rsa.PrivateKey
 }
 
-func NewJWTService(rsaStr string) (JWT, error) {
-	privKey, err := parseRSA(rsaStr)
+func NewJWTService(rsa string) (JWT, error) {
+	privKey, err := parseRSA(rsa)
 	if err != nil {
 		return JWT{}, err
 	}
@@ -68,7 +68,6 @@ func (j *JWT) ClaimsFromJWT(token string) (map[string]any, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodRSA); !ok {
 			return nil, fmt.Errorf("unexpected method: %s", t.Header["alg"])
 		}
-
 		return j.PublicKey(), nil
 	})
 

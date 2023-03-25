@@ -26,7 +26,7 @@ func TestGet(t *testing.T) {
 	if cfg.Database.HOST != os.Getenv("DB_HOST") {
 		t.Errorf("Unmatching tags with DB")
 	}
-	if cfg.Jwt.RSA != os.Getenv("JWT_PEM_FILE") {
+	if cfg.Jwt.RSA != os.Getenv("JWT_RSA") {
 		t.Errorf("Unmatching tags with jwt")
 	}
 }

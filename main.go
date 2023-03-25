@@ -56,13 +56,17 @@ func initServices(app *fiber.App, cfg *config.Config, db *gorm.DB) {
 	route.User(app.Group("/user", protected), userService)
 	route.Role(app.Group("/role", protected), roleService)
 
-	// seed optional initial data asynchronously. We don't care if it fails for any reason
-	go seedInitialData(userService, roleService)
+	if err := seedInitialData(userService, roleService); err != nil {
+		log.Fatalf("Error seeding database")
+	}
 
 	app.Get("/metrics", monitor.New())
 }
 
-func seedInitialData(userService service.User, roleService service.Role) {
-	service.InitRoles(roleService)
-	service.InitUsers(userService)
+func seedInitialData(userService service.User, roleService service.Role) error {
+	err := service.InitRoles(roleService)
+	if err != nil {
+		return err
+	}
+	return service.InitUsers(userService)
 }
