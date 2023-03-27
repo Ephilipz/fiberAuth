@@ -2,29 +2,11 @@ package repo_gorm
 
 import (
 	"fmt"
-	"os"
 	"strings"
 	"testing"
 
 	"github.com/Ephilipz/fiberAuth/model"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
 )
-
-func setupDB(t *testing.T) *gorm.DB {
-	db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
-	if err != nil {
-		t.Fatalf("Unable to initialize db %s", err)
-	}
-	db.AutoMigrate(&model.User{})
-	return db
-}
-
-func tearDownDB(t *testing.T) {
-	if err := os.Remove("gorm.db"); err != nil {
-		t.Fatalf("Unable to delete test db %s", err)
-	}
-}
 
 func testUsers(count uint8) []model.User {
 	var users []model.User
@@ -40,8 +22,8 @@ func testUsers(count uint8) []model.User {
 }
 
 func TestCreate(t *testing.T) {
-	db := setupDB(t)
-	defer tearDownDB(t)
+	db := setupTestDB(t)
+	defer tearDownTestDB(t)
 	repo := NewUserGormRepo(db)
 	user := testUsers(1)[0]
 	id, err := repo.Create(user)
@@ -65,15 +47,10 @@ func TestCreate(t *testing.T) {
 }
 
 func TestGet(t *testing.T) {
-	db := setupDB(t)
-	defer tearDownDB(t)
+	db := setupTestDB(t)
+	defer tearDownTestDB(t)
 	repo := NewUserGormRepo(db)
-	user := model.User{
-		FirstName: "First",
-		LastName:  "Last",
-		Email:     "test@testing.com",
-		Password:  []byte("TestPass"),
-	}
+	user := testUsers(1)[0]
 	if err := db.Create(&user).Error; err != nil {
 		t.Fatalf("Unable to create the test user %s", err.Error())
 	}
@@ -87,9 +64,26 @@ func TestGet(t *testing.T) {
 	}
 }
 
+func TestDelete(t *testing.T) {
+	db := setupTestDB(t)
+	defer tearDownTestDB(t)
+	repo := NewUserGormRepo(db)
+	user := testUsers(1)[0]
+	if err := db.Create(&user).Error; err != nil {
+		t.Fatalf("Unable to create the test user %s", err.Error())
+	}
+	if err := repo.Delete(user.ID); err != nil {
+		t.Fatalf("Unable to delete the user %s", err.Error())
+	}
+	count := int64(0)
+	if db.Model(&model.User{}).Where("id = ?", user.ID).Count(&count); count > 0 {
+		t.Fatalf("User was not deleted")
+	}
+}
+
 func TestGetByEmail(t *testing.T) {
-	db := setupDB(t)
-	defer tearDownDB(t)
+	db := setupTestDB(t)
+	defer tearDownTestDB(t)
 	repo := NewUserGormRepo(db)
 	user := testUsers(1)[0]
 	if err := db.Create(&user).Error; err != nil {
@@ -101,8 +95,8 @@ func TestGetByEmail(t *testing.T) {
 }
 
 func TestGetAll(t *testing.T) {
-	db := setupDB(t)
-	defer tearDownDB(t)
+	db := setupTestDB(t)
+	defer tearDownTestDB(t)
 	repo := NewUserGormRepo(db)
 	users := testUsers(20)
 	if err := db.CreateInBatches(&users, len(users)).Error; err != nil {
@@ -116,8 +110,8 @@ func TestGetAll(t *testing.T) {
 }
 
 func TestGetRoles(t *testing.T) {
-	db := setupDB(t)
-	defer tearDownDB(t)
+	db := setupTestDB(t)
+	defer tearDownTestDB(t)
 	repo := NewUserGormRepo(db)
 	roles := []model.Role{
 		{
@@ -142,5 +136,40 @@ func TestGetRoles(t *testing.T) {
 	}
 	if len(getRoles) != len(roles) {
 		t.Fatalf("Mismatching roles")
+	}
+}
+
+func TestUpdateRoles(t *testing.T) {
+	db := setupTestDB(t)
+	defer tearDownTestDB(t)
+	repo := NewUserGormRepo(db)
+	roles := []model.Role{
+		{
+			Name:      "testRole",
+			IsDefault: true,
+		},
+		{
+			Name: "casseRole",
+		},
+		{
+			Name: "paperTowelRoll",
+		},
+	}
+	user := testUsers(1)[0]
+	if err := db.CreateInBatches(&roles, len(roles)).Error; err != nil {
+		t.Fatalf("Unable to create the test roles %s", err.Error())
+	}
+	if err := db.Create(&user).Association("Roles").Append(&roles); err != nil {
+		t.Fatalf("Unable to create the test user %s", err.Error())
+	}
+
+	if err := repo.UpdateRoles(user.ID, []uint{roles[2].ID}); err != nil {
+		t.Fatalf("Unable to update the user's roles %s", err.Error())
+	}
+
+	rolesAfterUpdate := []model.Role{}
+	db.Model(&user).Association("Roles").Find(&rolesAfterUpdate)
+	if len(rolesAfterUpdate) != 1 || rolesAfterUpdate[0].ID != roles[2].ID {
+		t.Fatalf("Roles were not updated correctly")
 	}
 }

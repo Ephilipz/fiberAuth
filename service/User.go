@@ -11,7 +11,7 @@ import (
 type userRepository interface {
 	Get(uint) (model.User, error)
 	GetAll() ([]model.User, error)
-	GetByEmail(string) (model.User, error)
+	GetByEmail(string) model.User
 	Create(model.User) (uint, error)
 	Delete(uint) error
 	Update(model.User) error
@@ -37,9 +37,9 @@ func (s *User) GetAll() ([]model.DisplayUser, error) {
 	return mapResults(s.repo.GetAll())
 }
 
-func (s *User) GetByEmail(email string) (model.DisplayUser, error) {
-	result, err := s.repo.GetByEmail(email)
-	return mapResult(result, err)
+func (s *User) GetByEmail(email string) model.DisplayUser {
+	result := s.repo.GetByEmail(email)
+	return mapToDisplay(result)
 }
 
 // @precondition : the email, firstname, lastname should not be empty.
@@ -84,8 +84,8 @@ func (s *User) Update(userDTO model.UpdateUserDTO) error {
 }
 
 func (s *User) ValidateCredentials(email string, password string) (bool, uint) {
-	user, err := s.repo.GetByEmail(email)
-	if err != nil || user.ID == 0 {
+	user := s.repo.GetByEmail(email)
+	if user.ID == 0 {
 		return false, 0
 	}
 	isValid := CheckPasswordHash(password, user.Password)

@@ -29,10 +29,10 @@ func (r *UserGormRepo) GetAll() ([]model.User, error) {
 	return users, err
 }
 
-func (r *UserGormRepo) GetByEmail(email string) (model.User, error) {
+func (r *UserGormRepo) GetByEmail(email string) model.User {
 	user := model.User{}
-	err := r.db.Where("lower(email) = ?", strings.ToLower(email)).First(&user).Error
-	return user, err
+	r.db.Where("lower(email) = ?", strings.ToLower(email)).First(&user)
+	return user
 }
 
 func (r *UserGormRepo) Create(user model.User) (uint, error) {

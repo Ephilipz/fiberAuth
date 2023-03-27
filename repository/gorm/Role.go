@@ -17,10 +17,10 @@ func NewRoleGormRepo(db *gorm.DB) *RoleGormRepo {
 	}
 }
 
-func (r *RoleGormRepo) Get(id uint) (model.Role, error) {
+func (r *RoleGormRepo) Get(id uint) model.Role {
 	role := model.Role{}
-	err := r.db.Find(&role, id).Error
-	return role, err
+	r.db.Find(&role, id)
+	return role
 }
 
 func (r *RoleGormRepo) GetAll() ([]model.Role, error) {
@@ -31,7 +31,7 @@ func (r *RoleGormRepo) GetAll() ([]model.Role, error) {
 
 func (r *RoleGormRepo) GetByName(name string) model.Role {
 	role := model.Role{}
-	_ = r.db.Where("lower(name) = ?", strings.ToLower(name)).First(&role).Error
+	r.db.Where("lower(name) = ?", strings.ToLower(name)).First(&role)
 	return role
 }
 

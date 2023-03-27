@@ -15,8 +15,8 @@ func GetRole(roleService service.Role) fiber.Handler {
 			return c.Status(fiber.ErrBadRequest.Code).
 				JSON(fiber.Map{"message": "Invalid Id"})
 		}
-		role, err := roleService.Get(uint(id))
-		if err != nil {
+		role := roleService.Get(uint(id))
+		if role.ID == 0 {
 			return c.Status(fiber.ErrNotFound.Code).
 				JSON(fiber.Map{"message": "No role found"})
 		}

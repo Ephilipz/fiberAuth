@@ -19,9 +19,10 @@ func InitRoles(roleService Role) error {
 }
 
 func InitUsers(userService User) error {
-	if user, _ := userService.GetByEmail("admin@admin.com"); user.ID != 0 {
+	if user := userService.GetByEmail("admin@admin.com"); user.ID != 0 {
 		return nil
 	}
+
 	insertUser := model.CreateUserDTO{
 		FirstName: "Admin",
 		LastName:  "Admin",

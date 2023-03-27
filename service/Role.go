@@ -7,7 +7,7 @@ import (
 )
 
 type roleRepository interface {
-	Get(uint) (model.Role, error)
+	Get(uint) model.Role
 	GetAll() ([]model.Role, error)
 	GetByName(string) model.Role
 	Delete(uint) error
@@ -26,7 +26,7 @@ func NewroleService(repo roleRepository) Role {
 	}
 }
 
-func (s *Role) Get(id uint) (model.Role, error) {
+func (s *Role) Get(id uint) model.Role {
 	return s.repo.Get(id)
 }
 
