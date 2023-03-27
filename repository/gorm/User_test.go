@@ -21,7 +21,7 @@ func testUsers(count uint8) []model.User {
 	return users
 }
 
-func TestCreate(t *testing.T) {
+func TestCreate_User(t *testing.T) {
 	db := setupTestDB(t)
 	defer tearDownTestDB(t)
 	repo := NewUserGormRepo(db)
@@ -46,7 +46,7 @@ func TestCreate(t *testing.T) {
 	}
 }
 
-func TestGet(t *testing.T) {
+func TestGet_User(t *testing.T) {
 	db := setupTestDB(t)
 	defer tearDownTestDB(t)
 	repo := NewUserGormRepo(db)
@@ -64,7 +64,7 @@ func TestGet(t *testing.T) {
 	}
 }
 
-func TestDelete(t *testing.T) {
+func TestDelete_User(t *testing.T) {
 	db := setupTestDB(t)
 	defer tearDownTestDB(t)
 	repo := NewUserGormRepo(db)
@@ -81,7 +81,7 @@ func TestDelete(t *testing.T) {
 	}
 }
 
-func TestGetByEmail(t *testing.T) {
+func TestGetByEmail_User(t *testing.T) {
 	db := setupTestDB(t)
 	defer tearDownTestDB(t)
 	repo := NewUserGormRepo(db)
@@ -89,12 +89,12 @@ func TestGetByEmail(t *testing.T) {
 	if err := db.Create(&user).Error; err != nil {
 		t.Fatalf("Unable to create the test user %s", err.Error())
 	}
-	if getUser, _ := repo.GetByEmail(strings.ToUpper(user.Email)); getUser.ID != user.ID {
+	if getUser := repo.GetByEmail(strings.ToUpper(user.Email)); getUser.ID != user.ID {
 		t.Fatalf("Unable to get by email")
 	}
 }
 
-func TestGetAll(t *testing.T) {
+func TestGetAll_User(t *testing.T) {
 	db := setupTestDB(t)
 	defer tearDownTestDB(t)
 	repo := NewUserGormRepo(db)
@@ -109,7 +109,7 @@ func TestGetAll(t *testing.T) {
 	}
 }
 
-func TestGetRoles(t *testing.T) {
+func TestGetRoles_User(t *testing.T) {
 	db := setupTestDB(t)
 	defer tearDownTestDB(t)
 	repo := NewUserGormRepo(db)
@@ -139,7 +139,7 @@ func TestGetRoles(t *testing.T) {
 	}
 }
 
-func TestUpdateRoles(t *testing.T) {
+func TestUpdateRoles_User(t *testing.T) {
 	db := setupTestDB(t)
 	defer tearDownTestDB(t)
 	repo := NewUserGormRepo(db)

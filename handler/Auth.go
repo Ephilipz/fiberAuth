@@ -144,7 +144,7 @@ func sendTokens(c *fiber.Ctx, userService service.User, jwtService service.JWT, 
 			JSON(fiber.Map{"message": "Unable to generate JWT"})
 	}
 
-	return c.JSON(fiber.Map{"access": access, "refresh": refresh})
+	return c.JSON(fiber.Map{"roles": roleNamesStr, "access": access, "refresh": refresh})
 }
 
 func roleNames(roles []model.Role) []string {

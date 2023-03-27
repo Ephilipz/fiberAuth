@@ -6,7 +6,7 @@ import (
 )
 
 func InitRoles(roleService Role) error {
-	if role, _ := roleService.Get(1); role.ID == 1 {
+	if role := roleService.Get(1); role.ID == 1 {
 		return nil
 	}
 	roles := []model.Role{
