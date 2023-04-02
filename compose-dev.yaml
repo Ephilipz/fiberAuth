@@ -3,7 +3,7 @@ services:
     entrypoint:
     - sleep
     - infinity
-    image: docker/dev-environments-go
+    image: docker/dev-environments-go:latest
     init: true
     volumes:
     - type: bind
