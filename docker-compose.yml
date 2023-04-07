@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes: 
+      - db:/var/lib/postgresql/data
+    networks:
+      - learning
+
+  app:
+    depends_on:
+      - db
+    ports:
+      - ${PORT}:${PORT}
+    networks:
+      - learning
+    build:
+      dockerfile: Dockerfile
+      target: base
+    env_file:
+      - .env
+    volumes:
+      - .:/root
+
+networks:
+  learning:
+    driver: bridged
+
+volumes:
+  db:
+    driver: local

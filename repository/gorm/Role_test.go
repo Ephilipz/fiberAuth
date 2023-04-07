@@ -19,7 +19,7 @@ func testRoles(count uint8) []model.Role {
 
 func TestGet_Role(t *testing.T) {
 	db := setupTestDB(t)
-	defer tearDownTestDB(t)
+
 	repo := NewRoleGormRepo(db)
 	role := testRoles(1)[0]
 	if err := db.Create(&role).Error; err != nil {
@@ -32,7 +32,7 @@ func TestGet_Role(t *testing.T) {
 
 func TestGetAll_Role(t *testing.T) {
 	db := setupTestDB(t)
-	defer tearDownTestDB(t)
+
 	repo := NewRoleGormRepo(db)
 	roles := testRoles(3)
 	if err := db.Create(&roles).Error; err != nil {
@@ -57,7 +57,7 @@ func TestGetAll_Role(t *testing.T) {
 
 func TestGetByName_Role(t *testing.T) {
 	db := setupTestDB(t)
-	defer tearDownTestDB(t)
+
 	repo := NewRoleGormRepo(db)
 	role := testRoles(1)[0]
 	if err := db.Create(&role).Error; err != nil {
@@ -71,7 +71,7 @@ func TestGetByName_Role(t *testing.T) {
 
 func TestCreate_Role(t *testing.T) {
 	db := setupTestDB(t)
-	defer tearDownTestDB(t)
+
 	repo := NewRoleGormRepo(db)
 	role := testRoles(1)[0]
 	if err := repo.Create(role); err != nil {
@@ -88,7 +88,7 @@ func TestCreate_Role(t *testing.T) {
 
 func TestCreateMultiple_Role(t *testing.T) {
 	db := setupTestDB(t)
-	defer tearDownTestDB(t)
+
 	repo := NewRoleGormRepo(db)
 	roles := testRoles(3)
 	if err := repo.CreateMultiple(roles); err != nil {
@@ -105,7 +105,7 @@ func TestCreateMultiple_Role(t *testing.T) {
 
 func TestDelete_Role(t *testing.T) {
 	db := setupTestDB(t)
-	defer tearDownTestDB(t)
+
 	repo := NewRoleGormRepo(db)
 	role := testRoles(1)[0]
 	if err := db.Create(&role).Error; err != nil {
@@ -122,7 +122,7 @@ func TestDelete_Role(t *testing.T) {
 
 func TestUpdate_Role(t *testing.T) {
 	db := setupTestDB(t)
-	defer tearDownTestDB(t)
+
 	repo := NewRoleGormRepo(db)
 	role := testRoles(1)[0]
 	if err := db.Create(&role).Error; err != nil {

@@ -1,11 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/Ephilipz/fiberAuth/config"
 	"github.com/Ephilipz/fiberAuth/database"
-	"github.com/Ephilipz/fiberAuth/repository/gorm"
+	repo_gorm "github.com/Ephilipz/fiberAuth/repository/gorm"
 	"github.com/Ephilipz/fiberAuth/route"
 	"github.com/Ephilipz/fiberAuth/service"
 	"github.com/gofiber/fiber/v2"
@@ -16,19 +17,17 @@ import (
 
 func main() {
 	godotenv.Load()
-
-	app := fiber.New()
-	initApp(app)
-
-	log.Fatal(app.Listen(":3000"))
-}
-
-func initApp(app *fiber.App) {
 	cfg, err := config.Get()
 	if err != nil {
 		log.Fatalf("Error initializing config %s\n", err)
 	}
+	app := fiber.New()
+	initApp(app, cfg)
 
+	log.Fatal(app.Listen(fmt.Sprintf(":%d", cfg.App.PORT)))
+}
+
+func initApp(app *fiber.App, cfg *config.Config) {
 	db, err := database.Connect(cfg.Database)
 	if err != nil {
 		log.Fatalf("Error initializing db %s\n", err)

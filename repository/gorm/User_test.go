@@ -23,7 +23,6 @@ func testUsers(count uint8) []model.User {
 
 func TestCreate_User(t *testing.T) {
 	db := setupTestDB(t)
-	defer tearDownTestDB(t)
 	repo := NewUserGormRepo(db)
 	user := testUsers(1)[0]
 	id, err := repo.Create(user)
@@ -48,7 +47,6 @@ func TestCreate_User(t *testing.T) {
 
 func TestGet_User(t *testing.T) {
 	db := setupTestDB(t)
-	defer tearDownTestDB(t)
 	repo := NewUserGormRepo(db)
 	user := testUsers(1)[0]
 	if err := db.Create(&user).Error; err != nil {
@@ -66,7 +64,6 @@ func TestGet_User(t *testing.T) {
 
 func TestDelete_User(t *testing.T) {
 	db := setupTestDB(t)
-	defer tearDownTestDB(t)
 	repo := NewUserGormRepo(db)
 	user := testUsers(1)[0]
 	if err := db.Create(&user).Error; err != nil {
@@ -83,7 +80,6 @@ func TestDelete_User(t *testing.T) {
 
 func TestGetByEmail_User(t *testing.T) {
 	db := setupTestDB(t)
-	defer tearDownTestDB(t)
 	repo := NewUserGormRepo(db)
 	user := testUsers(1)[0]
 	if err := db.Create(&user).Error; err != nil {
@@ -96,7 +92,6 @@ func TestGetByEmail_User(t *testing.T) {
 
 func TestGetAll_User(t *testing.T) {
 	db := setupTestDB(t)
-	defer tearDownTestDB(t)
 	repo := NewUserGormRepo(db)
 	users := testUsers(20)
 	if err := db.CreateInBatches(&users, len(users)).Error; err != nil {
@@ -111,7 +106,6 @@ func TestGetAll_User(t *testing.T) {
 
 func TestGetRoles_User(t *testing.T) {
 	db := setupTestDB(t)
-	defer tearDownTestDB(t)
 	repo := NewUserGormRepo(db)
 	roles := []model.Role{
 		{
@@ -141,7 +135,7 @@ func TestGetRoles_User(t *testing.T) {
 
 func TestUpdateRoles_User(t *testing.T) {
 	db := setupTestDB(t)
-	defer tearDownTestDB(t)
+
 	repo := NewUserGormRepo(db)
 	roles := []model.Role{
 		{

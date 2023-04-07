@@ -20,10 +20,11 @@ func Connect(cfg config.DB) (*gorm.DB, error) {
 }
 
 func dsn(cfg *config.DB) string {
-	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
+	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
 		cfg.HOST,
 		cfg.USER,
 		cfg.PASS,
 		cfg.NAME,
-		cfg.PORT)
+		cfg.PORT,
+		cfg.SSLMODE)
 }

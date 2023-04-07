@@ -11,15 +11,21 @@ type DB struct {
 	PORT              string `env:"PORT"`
 	NAME              string `env:"NAME"`
 	ENABLE_MIGRATIONS bool   `env:"ENABLE_MIGRATIONS" envDefault:"true"`
+	SSLMODE           string `env:"SSLMODE" envDefault:"allow"`
 }
 
 type JWT struct {
 	RSA string `env:"RSA"`
 }
 
+type App struct {
+	PORT uint `env:"PORT" envDefault:"3000"`
+}
+
 type Config struct {
 	Database DB  `envPrefix:"DB_"`
 	Jwt      JWT `envPrefix:"JWT_"`
+	App      App
 }
 
 func Get() (*Config, error) {
