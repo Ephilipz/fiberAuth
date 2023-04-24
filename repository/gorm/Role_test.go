@@ -18,6 +18,7 @@ func testRoles(count uint8) []model.Role {
 }
 
 func TestGet_Role(t *testing.T) {
+	t.Parallel()
 	db := setupTestDB(t)
 
 	repo := NewRoleGormRepo(db)
@@ -31,6 +32,7 @@ func TestGet_Role(t *testing.T) {
 }
 
 func TestGetAll_Role(t *testing.T) {
+	t.Parallel()
 	db := setupTestDB(t)
 
 	repo := NewRoleGormRepo(db)
@@ -56,6 +58,7 @@ func TestGetAll_Role(t *testing.T) {
 }
 
 func TestGetByName_Role(t *testing.T) {
+	t.Parallel()
 	db := setupTestDB(t)
 
 	repo := NewRoleGormRepo(db)
@@ -70,6 +73,7 @@ func TestGetByName_Role(t *testing.T) {
 }
 
 func TestCreate_Role(t *testing.T) {
+	t.Parallel()
 	db := setupTestDB(t)
 
 	repo := NewRoleGormRepo(db)
@@ -87,6 +91,7 @@ func TestCreate_Role(t *testing.T) {
 }
 
 func TestCreateMultiple_Role(t *testing.T) {
+	t.Parallel()
 	db := setupTestDB(t)
 
 	repo := NewRoleGormRepo(db)
@@ -104,6 +109,7 @@ func TestCreateMultiple_Role(t *testing.T) {
 }
 
 func TestDelete_Role(t *testing.T) {
+	t.Parallel()
 	db := setupTestDB(t)
 
 	repo := NewRoleGormRepo(db)
@@ -121,6 +127,7 @@ func TestDelete_Role(t *testing.T) {
 }
 
 func TestUpdate_Role(t *testing.T) {
+	t.Parallel()
 	db := setupTestDB(t)
 
 	repo := NewRoleGormRepo(db)

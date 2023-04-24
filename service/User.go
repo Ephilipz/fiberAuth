@@ -68,11 +68,10 @@ func (s *User) Create(userDTO model.CreateUserDTO) (uint, error) {
 	return s.repo.Create(user)
 }
 
-// @precondition : email cannot be empty
-// @precondition : first and lastname cannot be empty
+// @precondition : id cannot be empty
 func (s *User) Update(userDTO model.UpdateUserDTO) error {
-	if len(userDTO.FirstName) == 0 || len(userDTO.LastName) == 0 || len(userDTO.Email) == 0 {
-		return errors.New("firstname, lastname and email are required")
+	if userDTO.ID == 0 {
+		return errors.New("ID is required")
 	}
 	user := model.User{
 		Model:     gorm.Model{ID: userDTO.ID},
@@ -117,9 +116,9 @@ func mapResults(userModels []model.User, err error) ([]model.DisplayUser, error)
 		return []model.DisplayUser{}, err
 	}
 
-	displayUsers := []model.DisplayUser{}
-	for _, user := range userModels {
-		displayUsers = append(displayUsers, mapToDisplay(user))
+	displayUsers := make([]model.DisplayUser, len(userModels))
+	for i, user := range userModels {
+		displayUsers[i] = mapToDisplay(user)
 	}
 	return displayUsers, nil
 }

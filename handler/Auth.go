@@ -108,7 +108,7 @@ func Refresh(userService service.User, jwtService service.JWT) fiber.Handler {
 				JSON(fiber.Map{"message": "Token cannot be empty"})
 		}
 		claims, err := jwtService.ClaimsFromJWT(token)
-		if err != nil || len(claims) == 0 {
+		if err != nil {
 			return c.Status(fiber.ErrBadRequest.Code).
 				JSON(fiber.Map{"message": "Invalid token"})
 		}

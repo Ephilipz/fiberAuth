@@ -47,7 +47,7 @@ func (r *UserGormRepo) Delete(id uint) error {
 }
 
 func (r *UserGormRepo) Update(user model.User) error {
-	return r.db.Save(&user).Error
+	return r.db.Model(&model.User{}).Where("id = ?", user.ID).Updates(user).Error
 }
 
 func (r *UserGormRepo) GetRoles(id uint) ([]model.Role, error) {

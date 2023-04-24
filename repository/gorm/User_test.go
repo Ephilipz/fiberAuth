@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/Ephilipz/fiberAuth/model"
+	"gorm.io/gorm"
 )
 
 func testUsers(count uint8) []model.User {
@@ -22,12 +23,13 @@ func testUsers(count uint8) []model.User {
 }
 
 func TestCreate_User(t *testing.T) {
+	t.Parallel()
 	db := setupTestDB(t)
 	repo := NewUserGormRepo(db)
 	user := testUsers(1)[0]
 	id, err := repo.Create(user)
-	if id == 0 {
-		t.Fatalf("User was not created")
+	if err != nil || id == 0 {
+		t.Fatalf("User was not created %s", err)
 	}
 	dbUser := model.User{}
 	err = db.Find(&dbUser, id).Error
@@ -46,6 +48,7 @@ func TestCreate_User(t *testing.T) {
 }
 
 func TestGet_User(t *testing.T) {
+	t.Parallel()
 	db := setupTestDB(t)
 	repo := NewUserGormRepo(db)
 	user := testUsers(1)[0]
@@ -63,6 +66,7 @@ func TestGet_User(t *testing.T) {
 }
 
 func TestDelete_User(t *testing.T) {
+	t.Parallel()
 	db := setupTestDB(t)
 	repo := NewUserGormRepo(db)
 	user := testUsers(1)[0]
@@ -79,6 +83,7 @@ func TestDelete_User(t *testing.T) {
 }
 
 func TestGetByEmail_User(t *testing.T) {
+	t.Parallel()
 	db := setupTestDB(t)
 	repo := NewUserGormRepo(db)
 	user := testUsers(1)[0]
@@ -91,6 +96,7 @@ func TestGetByEmail_User(t *testing.T) {
 }
 
 func TestGetAll_User(t *testing.T) {
+	t.Parallel()
 	db := setupTestDB(t)
 	repo := NewUserGormRepo(db)
 	users := testUsers(20)
@@ -104,7 +110,40 @@ func TestGetAll_User(t *testing.T) {
 	}
 }
 
+func TestUpdate_User(t *testing.T) {
+	t.Parallel()
+	db := setupTestDB(t)
+	repo := NewUserGormRepo(db)
+	user := model.User{
+		FirstName: "test",
+		LastName:  "last",
+		Email:     "test@test.com",
+		Password:  []byte("password12345678"),
+	}
+	err := db.Create(&user).Error
+	if err != nil {
+		t.Fatalf("Unable to create the test user %s", err.Error())
+	}
+
+	userUpdated := model.User{
+		Model:     gorm.Model{ID: user.ID},
+		FirstName: "newTest",
+	}
+	err = repo.Update(userUpdated)
+	if err != nil {
+		t.Fatalf("Unable to update the user %s", err.Error())
+	}
+	err = db.Model(&user).First(&user).Error
+	if err != nil {
+		t.Fatalf("Unable to retrieve the user %s", err.Error())
+	}
+	if user.FirstName != userUpdated.FirstName {
+		t.Errorf("updated firstname not matching")
+	}
+}
+
 func TestGetRoles_User(t *testing.T) {
+	t.Parallel()
 	db := setupTestDB(t)
 	repo := NewUserGormRepo(db)
 	roles := []model.Role{
@@ -134,6 +173,7 @@ func TestGetRoles_User(t *testing.T) {
 }
 
 func TestUpdateRoles_User(t *testing.T) {
+	t.Parallel()
 	db := setupTestDB(t)
 
 	repo := NewUserGormRepo(db)

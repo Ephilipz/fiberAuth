@@ -72,12 +72,12 @@ func (j *JWT) ClaimsFromJWT(token string) (map[string]any, error) {
 	})
 
 	if err != nil {
-		return map[string]any{}, err
+		return nil, err
 	}
 
 	if claims, ok := parsed.Claims.(jwt.MapClaims); ok && parsed.Valid {
 		return claims, nil
 	}
 
-	return map[string]any{}, errors.New("Invalid JWT")
+	return nil, errors.New("Invalid JWT")
 }

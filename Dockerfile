@@ -5,7 +5,7 @@ WORKDIR /app
 COPY . .
 
 RUN go mod download
-RUN go test -v ./...
+RUN go test -v -parallel 500 ./...
 
 RUN CGO_ENABLED=0 go build \
     -installsuffix 'static' \
