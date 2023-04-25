@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/Ephilipz/fiberAuth/model"
@@ -35,12 +36,33 @@ func TestInitUsers(t *testing.T) {
 	}
 	db.AutoMigrate(&model.User{})
 	repo := repo_gorm.NewUserGormRepo(db)
-
+	roleRepo := repo_gorm.NewRoleGormRepo(db)
+	err = roleRepo.CreateMultiple([]model.Role{
+		{Model: gorm.Model{ID: 1}, Name: "Admin"},
+		{Model: gorm.Model{ID: 2}, Name: "Student", IsDefault: true}},
+	)
+	if err != nil {
+		t.Fatalf("Unable to init roles %s", err.Error())
+	}
 	userService := NewUserService(repo)
 	if err = InitUsers(userService); err != nil {
-		t.Errorf("Unable to init users %s", err.Error())
+		t.Fatalf("Unable to init users %s", err.Error())
 	}
-	if users, _ := repo.GetAll(); users == nil || len(users) == 0 {
+	users, _ := repo.GetAll()
+	if users == nil || len(users) == 0 {
 		t.Errorf("Initial users not inserted")
 	}
+	for _, user := range users {
+		roles, _ := repo.GetRoles(user.ID)
+		fmt.Println(roles)
+		if roles == nil || len(roles) == 0 {
+			continue
+		}
+		for _, role := range roles {
+			if role.ID == 1 {
+				return
+			}
+		}
+	}
+	t.Error("No user with admin role found")
 }

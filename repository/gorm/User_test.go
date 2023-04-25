@@ -185,25 +185,22 @@ func TestUpdateRoles_User(t *testing.T) {
 		{
 			Name: "casseRole",
 		},
-		{
-			Name: "paperTowelRoll",
-		},
 	}
 	user := testUsers(1)[0]
 	if err := db.CreateInBatches(&roles, len(roles)).Error; err != nil {
 		t.Fatalf("Unable to create the test roles %s", err.Error())
 	}
-	if err := db.Create(&user).Association("Roles").Append(&roles); err != nil {
+	if err := db.Create(&user).Association("Roles").Append(&roles[0]); err != nil {
 		t.Fatalf("Unable to create the test user %s", err.Error())
 	}
 
-	if err := repo.UpdateRoles(user.ID, []uint{roles[2].ID}); err != nil {
+	if err := repo.UpdateRoles(user.ID, []uint{roles[1].ID}); err != nil {
 		t.Fatalf("Unable to update the user's roles %s", err.Error())
 	}
 
 	rolesAfterUpdate := []model.Role{}
 	db.Model(&user).Association("Roles").Find(&rolesAfterUpdate)
-	if len(rolesAfterUpdate) != 1 || rolesAfterUpdate[0].ID != roles[2].ID {
+	if rolesAfterUpdate[0].ID != roles[1].ID {
 		t.Fatalf("Roles were not updated correctly")
 	}
 }

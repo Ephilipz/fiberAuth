@@ -29,6 +29,9 @@ func InitUsers(userService User) error {
 		Password:  "pass12345678",
 		Email:     "admin@admin.com",
 	}
-	_, err := userService.Create(insertUser)
+	id, err := userService.Create(insertUser)
+	if err == nil {
+		err = userService.UpdateRoles(id, []uint{1})
+	}
 	return err
 }
