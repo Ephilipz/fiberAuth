@@ -5,7 +5,6 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
-	"fmt"
 	"reflect"
 	"testing"
 
@@ -60,7 +59,6 @@ func TestClaimsFromJWT(t *testing.T) {
 
 	jwtService, err := NewJWTService(rsaString)
 	resultClaims, err := jwtService.ClaimsFromJWT(jwt)
-	fmt.Printf("JWT claims %+v", resultClaims)
 
 	if err != nil {
 		t.Errorf("Error getting claims from jwt %s", err.Error())
