@@ -2,7 +2,6 @@ package service
 
 import (
 	"github.com/Ephilipz/fiberAuth/model"
-	"gorm.io/gorm"
 )
 
 func InitRoles(roleService Role) error {
@@ -10,10 +9,10 @@ func InitRoles(roleService Role) error {
 		return nil
 	}
 	roles := []model.Role{
-		{Model: gorm.Model{ID: 1}, Name: "Superadmin"},
-		{Model: gorm.Model{ID: 2}, Name: "Staff"},
-		{Model: gorm.Model{ID: 3}, Name: "Instructor"},
-		{Model: gorm.Model{ID: 4}, Name: "Student", IsDefault: true},
+		{ID: 1, Name: "Superadmin"},
+		{ID: 2, Name: "Staff"},
+		{ID: 3, Name: "Instructor"},
+		{ID: 4, Name: "Student", IsDefault: true},
 	}
 	return roleService.CreateMultiple(roles)
 }

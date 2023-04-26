@@ -52,14 +52,14 @@ func (r *UserGormRepo) Update(user model.User) error {
 
 func (r *UserGormRepo) GetRoles(id uint) ([]model.Role, error) {
 	roles := []model.Role{}
-	user := model.User{Model: gorm.Model{ID: id}}
+	user := model.User{ID: id}
 	err := r.db.Model(&user).Association("Roles").Find(&roles)
 	return roles, err
 }
 
 func (r *UserGormRepo) UpdateRoles(userId uint, roleIds []uint) error {
 	roles := []model.Role{}
-	user := model.User{Model: gorm.Model{ID: userId}}
+	user := model.User{ID: userId}
 	err := r.db.Where("id in ?", roleIds).Find(&roles).Error
 	if err != nil {
 		return err

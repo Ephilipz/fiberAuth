@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/Ephilipz/fiberAuth/model"
@@ -38,8 +37,8 @@ func TestInitUsers(t *testing.T) {
 	repo := repo_gorm.NewUserGormRepo(db)
 	roleRepo := repo_gorm.NewRoleGormRepo(db)
 	err = roleRepo.CreateMultiple([]model.Role{
-		{Model: gorm.Model{ID: 1}, Name: "Admin"},
-		{Model: gorm.Model{ID: 2}, Name: "Student", IsDefault: true}},
+		{ID: 1, Name: "Admin"},
+		{ID: 2, Name: "Student", IsDefault: true}},
 	)
 	if err != nil {
 		t.Fatalf("Unable to init roles %s", err.Error())
@@ -54,7 +53,6 @@ func TestInitUsers(t *testing.T) {
 	}
 	for _, user := range users {
 		roles, _ := repo.GetRoles(user.ID)
-		fmt.Println(roles)
 		if roles == nil || len(roles) == 0 {
 			continue
 		}

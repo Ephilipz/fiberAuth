@@ -12,7 +12,7 @@ import (
 
 func getTestUser() model.User {
 	return model.User{
-		Model:     gorm.Model{ID: 1},
+		ID:        1,
 		Email:     "test@test.com",
 		FirstName: "fist",
 		LastName:  "last",

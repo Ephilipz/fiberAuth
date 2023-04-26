@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/Ephilipz/fiberAuth/model"
-	"gorm.io/gorm"
 )
 
 func testUsers(count uint8) []model.User {
@@ -126,7 +125,7 @@ func TestUpdate_User(t *testing.T) {
 	}
 
 	userUpdated := model.User{
-		Model:     gorm.Model{ID: user.ID},
+		ID:        user.ID,
 		FirstName: "newTest",
 	}
 	err = repo.Update(userUpdated)

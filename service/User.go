@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/Ephilipz/fiberAuth/model"
-	"gorm.io/gorm"
 )
 
 type userRepository interface {
@@ -74,7 +73,7 @@ func (s *User) Update(userDTO model.UpdateUserDTO) error {
 		return errors.New("ID is required")
 	}
 	user := model.User{
-		Model:     gorm.Model{ID: userDTO.ID},
+		ID:        userDTO.ID,
 		FirstName: userDTO.FirstName,
 		LastName:  userDTO.LastName,
 		Email:     userDTO.Email,
